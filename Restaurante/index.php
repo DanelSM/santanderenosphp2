@@ -20,7 +20,7 @@
             </button>
             <div class="collapse navbar-collapse" id="mynavbar">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link" href="vista/HTML/index.html">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="vista/HTML/index.php">Inicio</a></li>
                     <li class="nav-item"><a class="nav-link" href="vista/HTML/menu.html">Menu</a></li>
                     <li class="nav-item"><a class="nav-link" href="vista/HTML/reserva.html">Reserva</a></li>
                     <li class="nav-item"><a class="nav-link" href="vista/HTML/sobrenosotros.html">Sobre Nosotros</a></li>

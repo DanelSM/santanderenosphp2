@@ -1,6 +1,6 @@
 <?php
 require_once "../configuracion/conexion.php";
-require_once "../modelo/Usuario.php";
+require_once "../modelo/usuario.php";
 
 class UsuarioController {
     private $modelusuario;
@@ -9,48 +9,64 @@ class UsuarioController {
         $this->modelusuario = new Usuario(); 
     }
 
+    // Login
     public function validarusu() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Corregí la forma en que accedes a $_POST['password'], antes tenías $_POST ['$password'] que está mal
             $usuario = $this->modelusuario->login($_POST['email'], $_POST['password']);
 
             if ($usuario) {
                 session_start();
                 $_SESSION['usuario'] = $usuario;
-                header("Location: ../vista/view/registro.php");
+                header("Location: ../vista/view/usuarios.php");
                 exit();
             } else {
-                header("Location: ../vista/view/perfil.php");
+                header("Location: ../vista/view/login.php?error=1");
                 exit();
             }
         }
     }
 
-    // Definición correcta del método cerrarSesion dentro de la clase
+    // Cerrar sesión
     public function cerrarsesion(){
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Parece que aquí querías hacer algo, pero el código estaba incompleto
-            // Además, la línea con el signo '?' está mal escrita, la corregí
+        session_start();
+        session_unset();
+        session_destroy();
+        header("Location: ../vista/view/login.php");
+        exit();
+    }
 
-            $nombre = $_POST['nombre'] ?? null;
-            $email = $_POST['email'] ?? null;
-            $contrasena = $_POST['contrasena'] ?? null;
-            $telefono = $_POST['telefono'] ?? null;
-            $rol = $_POST['rol'] ?? null;
+    // Crear usuario
+    public function crear() {
+        $this->modelusuario->crearUsuarios($_POST['nombre'], $_POST['email'], $_POST['contrasena'], $_POST['telefono'], $_POST['rol']);
+        header("Location: ../vista/view/usuarios.php");
+        exit();
+    }
 
-            // Aquí puedes agregar lo que necesites hacer para cerrar sesión o procesar datos
-            session_start();
-            session_unset();
-            session_destroy();
+    // Actualizar usuario
+    public function actualizar() {
+        $this->modelusuario->actualizarUsuario($_POST['id_usuario'], $_POST['nombre'], $_POST['email'], $_POST['telefono'], $_POST['rol']);
+        header("Location: ../vista/view/usuarios.php");
+        exit();
+    }
 
-            // Redirigir después de cerrar sesión, ejemplo:
-            header("Location: ../vista/view/login.php");
-            exit();
-        }
+    // Eliminar usuario
+    public function eliminar() {
+        $this->modelusuario->eliminarUsuario($_POST['id_usuario']);
+        header("Location: ../vista/view/usuarios.php");
+        exit();
     }
 }
 
-// Crear objeto y llamar a validarusu sólo si este archivo es accedido directamente
+// Ejecutar acción
 $objeto = new UsuarioController();
-$objeto->validarusu();
+
+if (isset($_POST['accion'])) {
+    switch ($_POST['accion']) {
+        case 'login': $objeto->validarusu(); break;
+        case 'crear': $objeto->crear(); break;
+        case 'actualizar': $objeto->actualizar(); break;
+        case 'eliminar': $objeto->eliminar(); break;
+        case 'cerrar': $objeto->cerrarsesion(); break;
+    }
+}
 ?>
